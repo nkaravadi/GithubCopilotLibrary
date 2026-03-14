@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "copilotlibrary"
+version = "0.3.0"
+description = "Python client for GitHub Copilot language-server. Chat, multi-turn conversations, and more via the local IntelliJ Copilot plugin binary."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+# Local on-device embeddings (no API calls, no token)
+local-torch  = ["sentence-transformers>=2.7"]
+local-onnx   = ["fastembed>=0.3"]
+# Install both backends
+local        = ["sentence-transformers>=2.7", "fastembed>=0.3"]
+
+[project.scripts]
+copilotlibrary = "copilotlibrary.cli:main"
+copilot-repl = "copilotlibrary.repl:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,200 @@
+nkaravadi@Nagas-MacBook-Pro-2 CopilotLibrary % python tests/manual_test.py
+
+────────────────────────────────────────────────────────────
+  1 · Binary path
+────────────────────────────────────────────────────────────
+  /Users/nkaravadi/Library/Application Support/JetBrains/IntelliJIdea2025.3/plugins/github-copilot-intellij/copilot-agent/native/darwin-arm64/copilot-language-server
+  ✓  File exists
+
+────────────────────────────────────────────────────────────
+  2 · LSP handshake  (initialize → initialized)
+────────────────────────────────────────────────────────────
+  ✓  Handshake complete
+
+────────────────────────────────────────────────────────────
+  3 · checkStatus
+────────────────────────────────────────────────────────────
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "status": "OK",
+    "user": "nkaravadi"
+  }
+}
+
+  status : OK
+  user   : nkaravadi
+
+────────────────────────────────────────────────────────────
+  4 · chat  prompt='Explain binary search in Python in one sentence.'
+────────────────────────────────────────────────────────────
+[frame 1] {
+  "jsonrpc": "2.0",
+  "method": "window/logMessage",
+  "params": {
+    "type": 2,
+    "message": "[lsp] Document not found for conversation: file:///untitled. Continuing without this file."
+  }
+}
+
+[frame 2] {
+  "jsonrpc": "2.0",
+  "method": "conversation/preconditionsNotification",
+  "params": {
+    "results": [
+      {
+        "type": "token",
+        "status": "failed"
+      },
+      {
+        "type": "chat_enabled",
+        "status": "ok"
+      }
+    ],
+    "status": "failed"
+  }
+}
+
+[frame 3] {
+  "jsonrpc": "2.0",
+  "method": "$/progress",
+  "params": {
+    "token": "3",
+    "value": {
+      "kind": "begin",
+      "title": "Conversation dff889be-0173-456a-aebe-dc6b5fecf5d7 Turn 5b0900ac-d3ad-4256-9ea8-f14e6bce01f3",
+      "conversationId": "dff889be-0173-456a-aebe-dc6b5fecf5d7",
+      "turnId": "5b0900ac-d3ad-4256-9ea8-f14e6bce01f3"
+    }
+  }
+}
+
+[frame 4] {
+  "jsonrpc": "2.0",
+  "method": "featureFlagsNotification",
+  "params": {
+    "rt": true,
+    "sn": false,
+    "chat": true,
+    "ic": true,
+    "pc": true,
+    "ae": {},
+    "agent_as_default": false,
+    "byok": true,
+    "data_migration_completed": false
+  }
+}
+
+[frame 5] {
+  "jsonrpc": "2.0",
+  "method": "window/logMessage",
+  "params": {
+    "type": 3,
+    "message": "[agentPrompt] Rendering fresh global context for conversation/turn dff889be-0173-456a-aebe-dc6b5fecf5d7/5b0900ac-d3ad-4256-9ea8-f14e6bce01f3"
+  }
+}
+
+[frame 6] {
+  "jsonrpc": "2.0",
+  "method": "window/logMessage",
+  "params": {
+    "type": 3,
+    "message": "[fetchChat] Request d705b13c-eb39-4d18-a574-e44e92584495 at <https://api.individual.githubcopilot.com/chat/completions> finished with 200 status after 577.3302910000002ms"
+  }
+}
+
+[frame 7] {
+  "jsonrpc": "2.0",
+  "method": "$/progress",
+  "params": {
+    "token": "3",
+    "value": {
+      "kind": "report",
+      "conversationId": "dff889be-0173-456a-aebe-dc6b5fecf5d7",
+      "turnId": "5b0900ac-d3ad-4256-9ea8-f14e6bce01f3",
+      "annotations": [],
+      "references": [],
+      "hideText": false,
+      "notifications": [],
+      "editAgentRounds": [
+        {
+          "roundId": 1,
+          "reply": "Binary search in Python is an efficient algorithm that repeatedly divides a sorted list in half to locate a target value by comparing the middle element with the target, reducing the search space logarithmically."
+        }
+      ],
+      "contextSize": {
+        "totalTokenLimit": 16384,
+        "systemPromptTokens": 1503,
+        "toolDefinitionTokens": 997,
+        "userMessagesTokens": 18,
+        "assistantMessagesTokens": 0,
+        "attachedFilesTokens": 0,
+        "toolResultsTokens": 0,
+        "totalUsedTokens": 2518,
+        "utilizationPercentage": 15.37
+      }
+    }
+  }
+}
+
+[frame 8] {
+  "jsonrpc": "2.0",
+  "method": "window/logMessage",
+  "params": {
+    "type": 3,
+    "message": "[streamMessages] message 0 returned. finish reason: [stop]"
+  }
+}
+
+[frame 9] {
+  "jsonrpc": "2.0",
+  "method": "window/logMessage",
+  "params": {
+    "type": 3,
+    "message": "[fetchChat] Request 3a1097fa-a084-43ff-b637-ca05bc30931b at <https://api.individual.githubcopilot.com/chat/completions> finished with 200 status after 444.1149580000001ms"
+  }
+}
+
+[frame 10] {
+  "jsonrpc": "2.0",
+  "method": "window/logMessage",
+  "params": {
+    "type": 3,
+    "message": "[streamMessages] message 0 returned. finish reason: [stop]"
+  }
+}
+
+[frame 11] {
+  "jsonrpc": "2.0",
+  "method": "$/progress",
+  "params": {
+    "token": "3",
+    "value": {
+      "kind": "end",
+      "conversationId": "dff889be-0173-456a-aebe-dc6b5fecf5d7",
+      "turnId": "5b0900ac-d3ad-4256-9ea8-f14e6bce01f3",
+      "suggestedTitle": "Understanding Binary Search in Python"
+    }
+  }
+}
+
+[frame 12] {
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "conversationId": "dff889be-0173-456a-aebe-dc6b5fecf5d7",
+    "turnId": "5b0900ac-d3ad-4256-9ea8-f14e6bce01f3",
+    "modelName": "GPT-4o",
+    "billingMultiplier": 0
+  }
+}
+
+Assembled reply:
+  ''
+
+  ⚠  Empty reply — check progress frame fields above
+
+────────────────────────────────────────────────────────────
+  Done
+────────────────────────────────────────────────────────────
