@@ -162,6 +162,7 @@ class CopilotClient:
         *,
         agent_path: str | None = None,
         on_progress: Callable[[dict[str, Any]], None] | None = None,
+        ca_bundle: str | None = None,
     ) -> None:
         """Initialize the CopilotClient.
 
@@ -170,14 +171,21 @@ class CopilotClient:
                 COPILOT_AGENT_PATH env var, then auto-detection.
             on_progress: Optional callback for progress notifications during chat.
                 Receives the raw progress notification dict.
+            ca_bundle: Path to PEM file containing extra CA certificates to trust (e.g. corp certs)
+                Falls back to NODE_EXTRA_CA_CERTS.  If neither is set, TLS certificate verification is disabled (not recommended).
         """
         self.agent_path = (
             agent_path
             or os.getenv("COPILOT_AGENT_PATH")
             or _DEFAULT_AGENT_PATH
         )
+        self.ca_bundle = (
+            ca_bundle
+            or os.getenv("NODE_EXTRA_CA_CERTS")
+            or None
+        )
         self._req_id = 0
-        self._process: subprocess.Popen[str] | None = None
+        self._process: subprocess.Popen[bytes] | None = None
         self._on_progress = on_progress
         self._feature_flags: FeatureFlags | None = None
         self._conversations: dict[str, Conversation] = {}
@@ -203,13 +211,27 @@ class CopilotClient:
                 "Set COPILOT_AGENT_PATH to the correct path, or pass agent_path=..."
             )
 
+        #Inherit the current env and patch so that node agent trust corp/self signed certs
+        env = os.environ.copy()
+
+        #CA Bundle priority:
+        # 1. ca_bundle passed to _init__ or NODE_EXTRA_CA_CERTS
+        # 2. disable TLS
+        ca = self.ca_bundle
+
+        if ca and os.path.isfile(ca):
+            env["NODE_EXTRA_CA_CERTS"] = ca
+        else:
+            env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"
+
         self._process = subprocess.Popen(
             [self.agent_path, "--stdio"],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True,
-            bufsize=1,
+            text=False,
+            bufsize=0,
+            env=env,
         )
         self._initialize()
 
@@ -876,7 +898,7 @@ class CopilotClient:
         payload = f"Content-Length: {len(msg.encode())}\r\n\r\n{msg}"
 
         assert self._process and self._process.stdin
-        self._process.stdin.write(payload)
+        self._process.stdin.write(payload.encode("utf-8"))
         self._process.stdin.flush()
 
     def _read_frame(self) -> dict[str, Any]:
@@ -886,7 +908,7 @@ class CopilotClient:
 
         headers: dict[str, str] = {}
         while True:
-            line = stdout.readline()
+            line = stdout.readline().decode("utf-8")
             if line in ("\r\n", "\n", ""):
                 break
             if ":" in line:
@@ -894,7 +916,7 @@ class CopilotClient:
                 headers[key.strip().lower()] = value.strip()
 
         content_length = int(headers.get("content-length", 0))
-        body = stdout.read(content_length)
+        body = stdout.read(content_length).decode("utf-8")
         
         try:
             return json.loads(body)

@@ -15,6 +15,7 @@ import json
 import sys
 import os
 import textwrap
+from http import client
 from typing import Any
 
 # Allow running from repo root
@@ -134,6 +135,8 @@ class CopilotREPL(cmd.Cmd):
             ═══════════════════════════════════════════════════════════════════
             OTHER
             ═══════════════════════════════════════════════════════════════════
+              signin
+              signout
               quit / exit     Exit the REPL
             """))
     
@@ -282,7 +285,48 @@ class CopilotREPL(cmd.Cmd):
     # ══════════════════════════════════════════════════════════════════
     # DISCOVERY
     # ══════════════════════════════════════════════════════════════════
-    
+
+    def do_signin(self, arg: str):
+        """Sign in to GitHub Copilot using device flow."""
+        if not self.client:
+            print("Not connected.")
+            return
+
+        status = client.check_status()
+        if status.is_authenticated:
+            print(f"✓ Already signed in as: {status.user}")
+            return
+
+        try:
+            info =  self.client.sign_in_initiate()
+            print(f"\n🔑 Sign in to GitHub Copilot")
+            print("─" * 40)
+            print(f"1. Visit: {info.verification_uri}")
+            print(f"2. Enter code: {info.user_code}")
+            print()
+            input("Press Enter after completing authorization in the browser...")
+
+            result = self.client.sign_in_confirm(info.user_code)
+            if result.is_authenticated:
+                print(f"✓ Sign-in successful! Authenticated as: {result.user}")
+            else:
+                print(f"✗ Sign-in failed. Status code: {result.status_code}")
+        except Exception as e:
+            print(f"✗ Sign-in error: {e}")
+
+        def do_signout(self, arg: str):
+            if not self.client:
+                print("Not connected.")
+                return
+
+            try:
+                result = self.client.sign_out()
+                print(f"✓ Signed out successfully.")
+            except Exception as e:
+                print(f"✗ Sign-out error: {e}")
+
+
+
     def do_status(self, arg: str):
         """Show authentication status."""
         if not self.client:
